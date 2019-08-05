@@ -10,8 +10,9 @@
         <payment>
             <mcp_gateway>
                 <debug>1</debug>
-                <active>0</active>
-                <model>MCPPaymentGatewayFacade</model><order_status>pending_payment</order_status>
+                <active>1</active>
+                <model>MCPIntegration\Payment\Model\PaymentAdapter</model>
+                <order_status>pending_payment</order_status>
                 <payment_action>authorize</payment_action>
                 <title>MCP Payment method</title>
                 <currency>USD</currency>

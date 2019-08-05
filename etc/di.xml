@@ -1,20 +1,41 @@
 <?xml version="1.0"?>
-<!--
-/**
- * Copyright © 2016 Magento. All rights reserved.
- * See COPYING.txt for license details.
- */
--->
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <!-- Payment Method Facade configuration -->
-    <virtualType name="MCPPaymentGatewayFacade" type="Magento\Payment\Model\Method\Adapter">
+    <type name="MCPIntegration\Payment\Model\PaymentAdapter">
         <arguments>
-            <argument name="code" xsi:type="const">\MCPIntegration\Payment\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="code" xsi:type="string">mcp_gateway</argument>
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">MCPIntegration\Payment\Block\Info</argument>
-            <argument name="valueHandlerPool" xsi:type="object">MCPPaymentGatewayValueHandlerPool</argument>
-            <argument name="commandPool" xsi:type="object">MCPPaymentGatewayCommandPool</argument>
+            <argument name="valueHandlerPool" xsi:type="object">MCPIntegrationPaymentGatewayValueHandlerPool</argument>
+        </arguments>
+    </type>
+
+    <!-- Configuration reader -->
+    <virtualType name="MCPIntegrationPaymentGatewayConfig" type="Magento\Payment\Gateway\Config\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="string">mcp_gateway</argument>
         </arguments>
     </virtualType>
+
+    <!-- Value handlers infrastructure -->
+    <virtualType name="MCPIntegrationPaymentGatewayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">MCPIntegrationPaymentGatewayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MCPIntegrationPaymentGatewayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">MCPIntegrationPaymentGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="MCPIntegration\Payment\Block\Info">
+        <arguments>
+            <argument name="config" xsi:type="object">MCPIntegrationPaymentGatewayConfig</argument>
+        </arguments>
+    </type>
+
 </config>
